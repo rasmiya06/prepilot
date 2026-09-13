@@ -2,9 +2,14 @@
 <html lang="en">
 <head>
      
-     <script>window.location.href="login.html";</script>                                                                                                                                                                                    
+                                                                                                                                                                                  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    if (sessionStorage.getItem("prepPilotLoggedIn") !== "true") {
+        window.location.href = "login.html";
+    }
+</script>
     <title>PrepPilot AI | Live Interactive Interview</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">

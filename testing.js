@@ -299,9 +299,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         enterInterviewBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Entering Interview Room...';
         enterInterviewBtn.disabled = true;
-
-        setTimeout(() => {
-            window.location.href = "index.html";
-        }, 300);
+setTimeout(() => {
+    sessionStorage.setItem("prepPilotLoggedIn", "true");
+    window.location.href = "index.html";
+}, 300);
     });
 });
