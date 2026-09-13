@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepPilot AI | Step 1: Candidate Setup</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="animated-bg"></div>
+
+    <div class="setup-page-wrapper">
+        <header class="setup-header">
+            <div class="header-badges-row">
+                <div class="brand-badge">
+                    <i class="fa-solid fa-sparkles"></i> Step 1 of 3: Profile Setup
+                </div>
+                <div class="streak-badge" id="login-streak-badge" title="Daily Interview Practice Streak">
+                    <i class="fa-solid fa-fire"></i> <span id="login-streak-text">1 Day Streak</span>
+                </div>
+            </div>
+            <h1>Configure Your <span>AI Interview</span></h1>
+            <p>Customize your target role, company, and seniority level to generate realistic interview questions.</p>
+        </header>
+
+        <div class="container" style="max-width: 780px;">
+            <div class="glass-card setup-main-card">
+                <div class="section-title">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>Candidate Profile & Target Role</span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="candidate-name">Full Name <span style="color: var(--danger);">*</span></label>
+                        <input type="text" id="candidate-name" class="form-control" placeholder="e.g. Rasmiya" required autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="candidate-email">Email Address</label>
+                        <input type="email" id="candidate-email" class="form-control" placeholder="e.g. candidate@example.com" autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="role">Target Role</label>
+                        <select id="role" class="form-control">
+                            <option value="Software Engineer">Software Engineer (General)</option>
+                            <option value="Frontend Developer">Frontend Developer (React/Vue/Web)</option>
+                            <option value="Backend Developer" selected>Backend Developer (Node/Java/Python/Go)</option>
+                            <option value="Full Stack Developer">Full Stack Developer</option>
+                            <option value="Data Scientist & AI Engineer">Data Scientist & AI Engineer</option>
+                            <option value="Product Manager">Product Manager</option>
+                            <option value="DevOps & Cloud Engineer">DevOps & Cloud Engineer</option>
+                            <option value="UI/UX Designer">UI/UX Designer</option>
+                            <option value="CUSTOM">-- Custom Role --</option>
+                        </select>
+                        <div id="custom-role-wrapper" class="custom-input-group">
+                            <input type="text" id="custom-role" class="form-control" placeholder="Enter custom role title...">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company">Target Company</label>
+                        <select id="company" class="form-control">
+                            <option value="Amazon" selected>Amazon (Leadership Principles)</option>
+                            <option value="Google">Google (Scalability & Architecture)</option>
+                            <option value="Microsoft">Microsoft</option>
+                            <option value="Meta">Meta</option>
+                            <option value="Apple">Apple</option>
+                            <option value="Netflix">Netflix</option>
+                            <option value="Stripe">Stripe</option>
+                            <option value="High-Growth Tech Startup">High-Growth Tech Startup</option>
+                            <option value="CUSTOM">-- Custom Company --</option>
+                        </select>
+                        <div id="custom-company-wrapper" class="custom-input-group">
+                            <input type="text" id="custom-company" class="form-control" placeholder="Enter company name...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="level">Seniority Level</label>
+                        <select id="level" class="form-control">
+                            <option value="Entry-Level / Junior" selected>Entry-Level / Junior (0-2 yrs)</option>
+                            <option value="Mid-Level">Mid-Level (2-5 yrs)</option>
+                            <option value="Senior">Senior (5-8 yrs)</option>
+                            <option value="Lead / Staff / Manager">Lead / Staff / Principal (8+ yrs)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mode">Interview Mode</label>
+                        <select id="mode" class="form-control">
+                            <option value="Mixed" selected>Mixed (Technical + Behavioral + Problem Solving)</option>
+                            <option value="Technical & Coding">Technical Concepts & Coding Pad</option>
+                            <option value="Behavioral (STAR)">Behavioral & Leadership (STAR Method)</option>
+                            <option value="System Design">System Design & Architecture</option>
+                            <option value="HR & Culture Fit">HR, Motivation & Culture Fit</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="difficulty">Difficulty Bar</label>
+                        <select id="difficulty" class="form-control">
+                            <option value="Easy">Standard / Warmup</option>
+                            <option value="Medium" selected>Challenging (Standard Industry)</option>
+                            <option value="Hard">FAANG / High-Bar Level</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="duration">Target Duration</label>
+                        <select id="duration" class="form-control">
+                            <option value="5">5 Minutes (Quick Test - 3 Questions)</option>
+                            <option value="10" selected>10 Minutes (Standard - 5 Questions)</option>
+                            <option value="15">15 Minutes (Comprehensive - 7 Questions)</option>
+                            <option value="20">20 Minutes (Deep Dive - 9 Questions)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="button" id="next-to-testing-btn" class="primary-btn">
+                    <span>Continue to Step 2: Audio & Hardware Testing</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const nameInput = document.getElementById("candidate-name");
+            const emailInput = document.getElementById("candidate-email");
+            const roleSelect = document.getElementById("role");
+            const customRoleWrapper = document.getElementById("custom-role-wrapper");
+            const customRoleInput = document.getElementById("custom-role");
+            const companySelect = document.getElementById("company");
+            const customCompanyWrapper = document.getElementById("custom-company-wrapper");
+            const customCompanyInput = document.getElementById("custom-company");
+            const levelSelect = document.getElementById("level");
+            const difficultySelect = document.getElementById("difficulty");
+            const durationSelect = document.getElementById("duration");
+            const modeSelect = document.getElementById("mode");
+            const nextBtn = document.getElementById("next-to-testing-btn");
+            const toastContainer = document.getElementById("toast-container");
+            const loginStreakText = document.getElementById("login-streak-text");
+
+            // Load saved values
+            if (localStorage.getItem("candidateName")) nameInput.value = localStorage.getItem("candidateName");
+            if (localStorage.getItem("candidateEmail")) emailInput.value = localStorage.getItem("candidateEmail");
+            
+            const streak = parseInt(localStorage.getItem("prepPilot_streak") || "1", 10);
+            loginStreakText.textContent = `${streak} Day Streak`;
+
+            roleSelect.addEventListener("change", () => {
+                customRoleWrapper.classList.toggle("visible", roleSelect.value === "CUSTOM");
+            });
+
+            companySelect.addEventListener("change", () => {
+                customCompanyWrapper.classList.toggle("visible", companySelect.value === "CUSTOM");
+            });
+
+            function showToast(message) {
+                const toast = document.createElement("div");
+                toast.className = "toast";
+                toast.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="color: var(--accent-blue);"></i> <span>${message}</span>`;
+                toastContainer.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
+
+            nextBtn.addEventListener("click", () => {
+                const name = nameInput.value.trim();
+                if (!name) {
+                    showToast("Please enter your candidate name.");
+                    nameInput.focus();
+                    return;
+                }
+
+                const role = roleSelect.value === "CUSTOM" ? (customRoleInput.value.trim() || "Backend Developer") : roleSelect.value;
+                const company = companySelect.value === "CUSTOM" ? (customCompanyInput.value.trim() || "Amazon") : companySelect.value;
+
+                localStorage.setItem("candidateName", name);
+                localStorage.setItem("candidateEmail", emailInput.value.trim());
+                localStorage.setItem("role", role);
+                localStorage.setItem("company", company);
+                localStorage.setItem("level", levelSelect.value);
+                localStorage.setItem("difficulty", difficultySelect.value);
+                localStorage.setItem("duration", durationSelect.value);
+                localStorage.setItem("mode", modeSelect.value);
+                localStorage.setItem("prepPilot_streak", streak.toString());
+
+                window.location.href = "testing.html";
+            });
+        });
+    </script>
+</body>
+</html>

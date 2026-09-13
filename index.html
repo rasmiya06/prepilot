@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepPilot AI | Live Interactive Interview</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .live-mic-canvas {
+            width: 100px;
+            height: 24px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius-full);
+            display: none;
+        }
+        .live-mic-canvas.active {
+            display: block;
+        }
+        .voice-suggestion-chips {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 4px 0 8px;
+            margin-top: 4px;
+        }
+        .v-chip {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-full);
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .v-chip:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+
+    <div class="app-container">
+        <!-- Top Navigation Bar -->
+        <header class="top-bar">
+            <div class="brand-section">
+                <div class="logo-icon"><i class="fa-solid fa-robot"></i></div>
+                <div class="brand-text">
+                    <h1>PrepPilot <span>AI</span></h1>
+                    <div class="session-badge-wrapper">
+                        <span class="status-pill"><span class="status-dot"></span> Live</span>
+                        <span class="meta-pill" id="header-meta-pill">Backend Developer • Amazon</span>
+                        <div class="streak-badge" id="session-streak-badge" title="Daily Interview Practice Streak">
+                            <i class="fa-solid fa-fire"></i> <span id="session-streak-text">1 Day Streak</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session Progress & Countdown Timer -->
+            <div class="session-tracker">
+                <div class="timer-box">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="session-timer">10:00</span>
+                </div>
+                <div class="question-counter">
+                    <span id="question-progress-text">Q 1 of 5</span>
+                    <div class="progress-track">
+                        <div id="progress-bar-fill" class="progress-bar-fill" style="width: 20%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="header-actions">
+                <button id="voice-toggle" class="header-btn active" title="Toggle AI voice synthesis reading">
+                    <i class="fa-solid fa-volume-high"></i>
+                    <span>Voice On</span>
+                </button>
+                <button id="soundfx-toggle" class="header-btn active" title="Toggle Sound Effects">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>FX On</span>
+                </button>
+                <button id="cam-toggle" class="header-btn" title="Toggle Candidate Webcam">
+                    <i class="fa-solid fa-video"></i>
+                    <span>Webcam</span>
+                </button>
+                <button id="code-toggle" class="header-btn" title="Toggle Technical Code Pad">
+                    <i class="fa-solid fa-code"></i>
+                    <span>Code Pad</span>
+                </button>
+                <button id="end-interview-btn" class="header-btn end-interview-btn" title="Conclude interview & get evaluation report">
+                    <i class="fa-solid fa-flag-checkered"></i>
+                    <span>End Interview</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Stage -->
+        <div class="main-stage-wrapper">
+            <main class="interview-viewport" id="viewport">
+                <!-- AI Avatar Sticky Stage -->
+                <div class="avatar-section">
+                    <div class="avatar-container" id="avatar-container">
+                        <div class="pulse-ring"></div>
+                        <div class="pulse-ring" style="animation-delay: 0.6s;"></div>
+                        <div class="ai-avatar">
+                            <i class="fa-solid fa-robot" id="avatar-icon"></i>
+                        </div>
+                    </div>
+                    <div class="avatar-status-pill" id="ai-status-pill">
+                        <i class="fa-solid fa-waveform-lines" id="status-icon"></i>
+                        <span id="ai-status">Ready for your answer</span>
+                    </div>
+                </div>
+
+                <!-- Chat History -->
+                <div class="chat-container" id="chat-history">
+                    <!-- Dynamic Messages Injected Here -->
+                </div>
+
+                <!-- Thinking Indicator (Properly Hidden by Default) -->
+                <div id="ai-loading" class="message ai-message hidden">
+                    <div class="bubble thinking">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+
+                <!-- Live Interim Speech Transcript Banner -->
+                <div id="live-transcript-box" class="live-transcript-box">
+                    <span class="rec-dot"></span>
+                    <span style="font-weight: 600; color: var(--text-primary);" id="mic-label-status">Microphone:</span>
+                    <span id="live-transcript-text" style="font-style: italic;">Listening to your voice... Speak aloud or select suggestion below</span>
+                </div>
+
+                <!-- Quick Action Chips -->
+                <div class="quick-chips-wrapper" id="quick-chips">
+                    <button type="button" class="chip-btn" id="chip-hint">
+                        <i class="fa-regular fa-lightbulb"></i> Give me a hint
+                    </button>
+                    <button type="button" class="chip-btn" id="chip-repeat">
+                        <i class="fa-solid fa-rotate-right"></i> Repeat question
+                    </button>
+                    <button type="button" class="chip-btn" id="chip-skip">
+                        <i class="fa-solid fa-forward-step"></i> Skip question
+                    </button>
+                    <button type="button" class="chip-btn" id="chip-codepad">
+                        <i class="fa-solid fa-code"></i> Open Code Pad
+                    </button>
+                </div>
+            </main>
+
+            <!-- Floating Candidate Webcam PiP Box -->
+            <div id="candidate-pip" class="candidate-pip-widget">
+                <div class="pip-header">
+                    <span class="pip-badge"><i class="fa-solid fa-circle" style="color: var(--success); font-size: 6px;"></i> Candidate Feed</span>
+                    <button type="button" id="close-pip-btn" class="pip-close-btn"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <video id="pip-video" autoplay playsinline muted></video>
+                <div class="pip-mic-level">
+                    <div id="pip-mic-fill" class="pip-mic-fill"></div>
+                </div>
+            </div>
+
+            <!-- Collapsible Code / Scratchpad Drawer -->
+            <aside id="code-drawer" class="code-drawer collapsed">
+                <div class="drawer-header">
+                    <div class="drawer-title">
+                        <i class="fa-solid fa-code"></i>
+                        <span>Technical Code Pad</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <select id="code-language" class="form-control" style="padding: 4px 8px; font-size: 0.75rem; width: auto;">
+                            <option value="javascript">JavaScript</option>
+                            <option value="python">Python</option>
+                            <option value="java">Java</option>
+                            <option value="cpp">C++</option>
+                            <option value="sql">SQL</option>
+                        </select>
+                        <button type="button" id="close-code-btn" class="msg-action-btn"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+                <div class="code-editor-area">
+                    <textarea id="code-input" class="code-textarea" placeholder="// Write your algorithm or code snippet here...&#10;function solution(input) {&#10;    // Implement logic&#10;    return true;&#10;}"></textarea>
+                    <div class="code-actions">
+                        <button type="button" id="insert-code-btn" class="code-btn submit-code">
+                            <i class="fa-solid fa-arrow-down-to-bracket"></i> Add to Response
+                        </button>
+                        <button type="button" id="clear-code-btn" class="code-btn">
+                            <i class="fa-regular fa-trash-can"></i> Clear
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Input Bar Area & Live Answer Quality Coach -->
+        <footer class="input-area">
+            <!-- Live Answer Quality Coach & STAR Tracker -->
+            <div class="answer-coach-bar">
+                <div class="coach-left">
+                    <div class="quality-meter">
+                        <span id="coach-word-count">0 words</span>
+                        <div class="quality-dots">
+                            <span class="q-dot" id="q-dot-1"></span>
+                            <span class="q-dot" id="q-dot-2"></span>
+                            <span class="q-dot" id="q-dot-3"></span>
+                            <span class="q-dot" id="q-dot-4"></span>
+                        </div>
+                        <span id="coach-quality-label" style="color: var(--text-dim);">Awaiting answer</span>
+                    </div>
+                    <div class="star-badges-live" title="STAR Method Tracking">
+                        <span class="star-tag" id="star-s">S</span>
+                        <span class="star-tag" id="star-t">T</span>
+                        <span class="star-tag" id="star-a">A</span>
+                        <span class="star-tag" id="star-r">R</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" id="sample-answer-btn" class="polish-btn" style="color: var(--accent-blue);" title="Auto-fill a sample technical response for testing">
+                        <i class="fa-regular fa-lightbulb"></i> Sample Answer
+                    </button>
+                    <button type="button" id="polish-answer-btn" class="polish-btn" title="Structure your answer using STAR framework">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI Polish
+                    </button>
+                </div>
+            </div>
+
+            <div class="input-wrapper">
+                <button type="button" id="mic-btn" class="icon-btn mic-btn" title="Click to Speak (Microphone Input)">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+                <canvas id="live-input-canvas" class="live-mic-canvas" width="100" height="24"></canvas>
+                <textarea id="user-input" placeholder="Type your answer or click mic to speak..." rows="1"></textarea>
+                <button type="button" id="clear-text-btn" class="icon-btn" title="Clear Text" style="font-size: 0.95rem;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <button type="button" id="send-btn" class="icon-btn send-btn" title="Submit Answer (Enter)">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+
+            <!-- Dynamic Voice / Concept Suggestions Chips for the active question -->
+            <div class="voice-suggestion-chips" id="voice-suggestion-chips">
+                <!-- Dynamically updated per question -->
+            </div>
+
+            <p class="helper-text">
+                Press <strong>Enter</strong> to submit • <strong>Shift + Enter</strong> for newline • Click 🎙️ to talk • <strong>Sample Answer</strong> to test scoring
+            </p>
+        </footer>
+    </div>
+
+    <!-- Confirmation Modal: End Interview -->
+    <div id="confirm-modal" class="confirm-modal-overlay">
+        <div class="confirm-modal-card">
+            <i class="fa-solid fa-circle-question" style="font-size: 2.2rem; color: var(--warning); margin-bottom: 0.8rem;"></i>
+            <h3>Finish Interview Session?</h3>
+            <p>Are you sure you want to conclude the interview? PrepPilot AI will analyze your submitted answers and generate your full evaluation report.</p>
+            <div class="confirm-actions">
+                <button type="button" id="cancel-end-btn" class="btn-secondary">Continue Session</button>
+                <button type="button" id="confirm-end-btn" class="primary-btn" style="margin-top: 0; width: auto; padding: 10px 20px;">Generate Report</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comprehensive Evaluation & Assessment Report Overlay -->
+    <div id="report-page" class="report-overlay">
+        <div class="container">
+            <div class="report-card">
+                <div class="report-header">
+                    <h2>PrepPilot AI • <span>Evaluation Report</span></h2>
+                    <div class="report-candidate-meta">
+                        <span id="rep-name" style="font-weight: 700; color: var(--text-primary);">Candidate Name</span>
+                        <span>•</span>
+                        <span id="rep-role-company">Backend Developer @ Amazon</span>
+                        <span>•</span>
+                        <span id="rep-date">September 13, 2026</span>
+                        <span>•</span>
+                        <span id="rep-verdict" class="verdict-badge hire"><i class="fa-solid fa-check-circle"></i> Strong Hire</span>
+                        <span>•</span>
+                        <span class="growth-pill" id="rep-streak-pill">🔥 1 Day Practice Streak</span>
+                    </div>
+                </div>
+
+                <!-- Key Metric Scorecards -->
+                <div class="report-grid">
+                    <div class="score-card">
+                        <span class="score-val" id="res-overall">0</span>
+                        <label>Overall Score</label>
+                    </div>
+                    <div class="score-card">
+                        <span class="score-val" id="res-tech">0</span>
+                        <label>Technical Depth</label>
+                    </div>
+                    <div class="score-card">
+                        <span class="score-val" id="res-comm">0</span>
+                        <label>Communication</label>
+                    </div>
+                    <div class="score-card">
+                        <span class="score-val" id="res-conf">0</span>
+                        <label>Confidence & STAR</label>
+                    </div>
+                </div>
+
+                <!-- AI Executive Summary & Feedback -->
+                <div class="feedback-section">
+                    <h3><i class="fa-solid fa-sparkles"></i> AI Performance Assessment</h3>
+                    <p id="res-feedback" class="feedback-summary">
+                        No responses submitted.
+                    </p>
+
+                    <div class="insights-grid">
+                        <div class="insight-box strengths">
+                            <h4><i class="fa-solid fa-circle-check"></i> Key Strengths</h4>
+                            <ul id="res-strengths">
+                                <li>N/A</li>
+                            </ul>
+                        </div>
+
+                        <div class="insight-box improvements">
+                            <h4><i class="fa-solid fa-arrow-trend-up"></i> Areas for Growth</h4>
+                            <ul id="res-improvements">
+                                <li>N/A</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Question-by-Question Transcript & Review -->
+                <div class="qa-review-section">
+                    <h3><i class="fa-solid fa-list-check" style="color: var(--accent-blue);"></i> Question-by-Question Review</h3>
+                    <div id="qa-review-list">
+                        <!-- Dynamic QA Accordions Injected Here -->
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="report-actions">
+                    <button type="button" class="btn-secondary" id="restart-interview-btn">
+                        <i class="fa-solid fa-rotate-left"></i> New Interview
+                    </button>
+                    <button type="button" class="btn-secondary" id="copy-summary-btn">
+                        <i class="fa-regular fa-copy"></i> Copy Summary
+                    </button>
+                    <button type="button" class="primary-btn" id="print-pdf-btn" style="margin-top: 0; width: auto;">
+                        <i class="fa-solid fa-file-arrow-down"></i> Download / Print PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="voice-engine.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

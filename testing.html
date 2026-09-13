@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepPilot AI | Step 2: Audio & Hardware Testing</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .test-canvas {
+            width: 100%;
+            height: 70px;
+            background: #020617;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--glass-border);
+            margin-top: 10px;
+            display: block;
+        }
+        .step-progress-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-dim);
+        }
+        .step-item.active {
+            color: var(--accent-blue);
+        }
+        .step-item.completed {
+            color: var(--success);
+        }
+        .step-divider {
+            width: 30px;
+            height: 1px;
+            background: var(--glass-border);
+        }
+        .voice-controls-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+        .slider-group input {
+            accent-color: var(--accent-blue);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+
+    <div class="setup-page-wrapper">
+        <header class="setup-header">
+            <div class="step-progress-bar">
+                <span class="step-item completed"><i class="fa-solid fa-circle-check"></i> 1. Profile</span>
+                <span class="step-divider"></span>
+                <span class="step-item active"><i class="fa-solid fa-circle-dot"></i> 2. Audio & Hardware Check</span>
+                <span class="step-divider"></span>
+                <span class="step-item"><i class="fa-regular fa-circle"></i> 3. Live Interview</span>
+            </div>
+            <h1>Pre-Flight <span>Audio & Mic Test</span></h1>
+            <p>Customize your AI voice settings, test speech clarity, and verify your microphone.</p>
+        </header>
+
+        <div class="container" style="max-width: 920px;">
+            <div class="glass-card" style="padding: 2.2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem;">
+                    <div>
+                        <h3 id="test-candidate-title" style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary);">Candidate Hardware Readiness</h3>
+                        <p id="test-candidate-subtitle" style="font-size: 0.85rem; color: var(--text-secondary);">Backend Developer @ Amazon</p>
+                    </div>
+                    <div class="streak-badge" id="test-streak-badge">
+                        <i class="fa-solid fa-fire"></i> <span id="test-streak-text">1 Day Streak</span>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <!-- Module 1: AI Voice Speaker & Settings -->
+                    <div class="insight-box" style="padding: 1.4rem; background: rgba(15, 23, 42, 0.6);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">
+                                <i class="fa-solid fa-volume-high" style="color: var(--accent-blue);"></i> AI Interviewer Voice
+                            </h4>
+                            <button type="button" id="play-voice-test-btn" class="btn-pill">
+                                <i class="fa-solid fa-play"></i> Test Voice
+                            </button>
+                        </div>
+                        <p id="speaker-hint-text" style="font-size: 0.78rem; color: var(--text-dim); margin-top: 6px;">
+                            Click to hear natural, clear voice audio
+                        </p>
+
+                        <!-- Voice Selector Dropdown -->
+                        <div style="margin-top: 10px;">
+                            <label style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600;">Select Voice Actor</label>
+                            <select id="voice-select" class="form-control" style="padding: 6px 10px; font-size: 0.82rem; margin-top: 4px;">
+                                <option value="">Loading available voices...</option>
+                            </select>
+                        </div>
+
+                        <!-- Speed & Pitch Sliders -->
+                        <div class="voice-controls-row">
+                            <div class="slider-group">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Pace / Speed</span>
+                                    <span id="speed-val">0.95x</span>
+                                </div>
+                                <input type="range" id="voice-speed" min="0.75" max="1.25" step="0.05" value="0.95">
+                            </div>
+                            <div class="slider-group">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Pitch</span>
+                                    <span id="pitch-val">1.0x</span>
+                                </div>
+                                <input type="range" id="voice-pitch" min="0.8" max="1.2" step="0.05" value="1.0">
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                            <span style="font-size: 0.75rem; color: var(--text-secondary);">Speech Clarity: Natural HD</span>
+                            <span id="voice-verified-badge" class="growth-pill hidden"><i class="fa-solid fa-check"></i> Voice Clear</span>
+                        </div>
+                    </div>
+
+                    <!-- Module 2: Microphone Test with Live Oscilloscope -->
+                    <div class="insight-box" style="padding: 1.4rem; background: rgba(15, 23, 42, 0.6);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">
+                                <i class="fa-solid fa-microphone" style="color: var(--accent-blue);"></i> Microphone Input
+                            </h4>
+                            <button type="button" id="start-mic-test-btn" class="btn-pill">
+                                <i class="fa-solid fa-play"></i> Test Mic
+                            </button>
+                        </div>
+                        <p id="mic-hint-text" style="font-size: 0.78rem; color: var(--text-dim); margin-top: 6px;">
+                            Speak into your mic to see the live waveform
+                        </p>
+
+                        <!-- Live Waveform Canvas -->
+                        <canvas id="mic-waveform-canvas" class="test-canvas" width="380" height="70"></canvas>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                            <span id="mic-decibel-text" style="font-size: 0.75rem; color: var(--text-secondary);">Audio Signal: 0%</span>
+                            <span id="mic-verified-badge" class="growth-pill hidden"><i class="fa-solid fa-check"></i> Mic Active</span>
+                        </div>
+                        <p id="mic-spoken-transcript" style="font-size: 0.8rem; color: var(--text-highlight); margin-top: 6px; min-height: 18px; font-style: italic;"></p>
+                    </div>
+                </div>
+
+                <!-- Module 3: Webcam Video Feed (Optional) -->
+                <div style="margin-top: 1.5rem; background: rgba(15, 23, 42, 0.4); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.88rem; font-weight: 600; color: var(--text-primary);">
+                            <i class="fa-solid fa-video" style="color: var(--accent-blue); margin-right: 6px;"></i> Webcam Preview (Optional)
+                        </span>
+                        <button type="button" id="test-webcam-btn" class="btn-pill">
+                            <i class="fa-solid fa-camera"></i> Toggle Camera
+                        </button>
+                    </div>
+                    <div id="testing-webcam-box" class="preview-video-container" style="height: 140px; margin-top: 10px;">
+                        <video id="testing-video-element" autoplay playsinline muted></video>
+                        <span class="preview-video-overlay">Live Camera Active</span>
+                    </div>
+                </div>
+
+                <!-- Proceed Button -->
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn-secondary" onclick="location.href='login.html'" style="flex: 0.35;">
+                        <i class="fa-solid fa-arrow-left"></i> Edit Profile
+                    </button>
+                    <button type="button" id="enter-interview-btn" class="primary-btn" style="flex: 0.65; margin-top: 0;">
+                        <span>Step 3: Enter Live Interview Room</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="voice-engine.js"></script>
+    <script src="testing.js"></script>
+</body>
+</html>
